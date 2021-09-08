@@ -5,6 +5,7 @@ import router from './router'
 import store from './store'
 
 import globalRegister from './global'
+import tRequest from './service'
 
 const app = createApp(App)
 
@@ -12,4 +13,19 @@ const app = createApp(App)
 
 app.use(store).use(router).use(globalRegister)
 app.mount('#app')
-// createApp(App).use(store).use(router).mount('#app')
+
+tRequest.request({
+  method: 'GET',
+  url: '/get',
+  // showLoading: false,
+  interceptors: {
+    requestInterceptor: (config) => {
+      console.log('单独请求成功')
+      return config
+    },
+    responseInterceptor: (res) => {
+      console.log('单独返回成功')
+      return res
+    }
+  }
+})
