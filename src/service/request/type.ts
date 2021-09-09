@@ -1,14 +1,13 @@
 import type { AxiosRequestConfig, AxiosResponse } from 'axios'
-import { ILoadingInstance } from 'element-plus/lib/components/loading/src/loading.type'
 
-interface TRequestInterceptors {
+interface TRequestInterceptors<T = AxiosResponse> {
   requestInterceptor?: (config: AxiosRequestConfig) => AxiosRequestConfig
   requestInterceptorCatch?: (error: any) => any
-  responseInterceptor?: (config: AxiosResponse) => AxiosResponse
+  responseInterceptor?: (config: T) => T
   responseInterceptorCatch?: (error: any) => any
 }
 
-interface TRequestConfig extends AxiosRequestConfig {
+interface TRequestConfig<T = AxiosResponse> extends AxiosRequestConfig {
   interceptors?: TRequestInterceptors
   showLoading?: boolean
 }

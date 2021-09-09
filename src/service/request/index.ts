@@ -56,26 +56,41 @@ class TRequest {
     )
   }
 
-  request(config: TRequestConfig): void {
-    if (config.interceptors?.requestInterceptor) {
-      config = config.interceptors.requestInterceptor(config)
-    }
-    if (config.showLoading === false) {
-      this.showLoading = config.showLoading
-    }
-    this.instance
-      .request(config)
-      .then((res) => {
-        if (config.interceptors?.responseInterceptor) {
-          res = config.interceptors.responseInterceptor(res)
-        }
-        console.log(res)
-        this.showLoading = IS_LOADING
-      })
-      .catch((err) => {
-        this.showLoading = IS_LOADING
-        return err
-      })
+  request<T>(config: TRequestConfig): Promise<T> {
+    return new Promise((resolove, reject) => {
+      if (config.interceptors?.requestInterceptor) {
+        config = config.interceptors.requestInterceptor(config)
+      }
+      if (config.showLoading === false) {
+        this.showLoading = config.showLoading
+      }
+      this.instance
+        .request<any, T>(config)
+        .then((res) => {
+          if (config.interceptors?.responseInterceptor) {
+            // res = config.interceptors.responseInterceptor(res)
+          }
+          this.showLoading = IS_LOADING
+          resolove(res)
+        })
+        .catch((err) => {
+          this.showLoading = IS_LOADING
+          reject(err)
+        })
+    })
+  }
+
+  get<T>(config: TRequestConfig<T>): Promise<T> {
+    return this.request({ ...config, method: 'GET' })
+  }
+  post<T>(config: TRequestConfig<T>): Promise<T> {
+    return this.request({ ...config, method: 'POST' })
+  }
+  delete<T>(config: TRequestConfig<T>): Promise<T> {
+    return this.request({ ...config, method: 'DELETE' })
+  }
+  patch<T>(config: TRequestConfig<T>): Promise<T> {
+    return this.request({ ...config, method: 'PATCH' })
   }
 }
 
