@@ -6,6 +6,10 @@ const tRequest = new TRequest({
   timeout: TIME_OUT,
   interceptors: {
     requestInterceptor(config) {
+      const token = ''
+      if (token) {
+        config.headers.Authorization = `bearer ${token}`
+      }
       console.log('自定义请求拦截成功')
       return config
     },

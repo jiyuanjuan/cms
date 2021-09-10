@@ -13,11 +13,12 @@
 
 <script lang="ts">
 import { defineComponent, reactive, ref } from 'vue'
-
-import { rule } from '../config/login-account'
+import { useStore } from 'vuex'
 
 import { ElForm } from 'element-plus'
 import LocalCache from '@/utils/cache'
+
+import { rule } from '../config/login-account'
 
 export default defineComponent({
   setup() {
@@ -26,16 +27,18 @@ export default defineComponent({
       user: LocalCache.getCache('user') ?? '',
       pwd: LocalCache.getCache('pwd') ?? ''
     })
+    const store = useStore()
+
     const accountAction = (isKeepInfo: boolean) => {
       formREF.value?.validate((valid) => {
         if (valid) {
-          console.log(isKeepInfo)
           if (isKeepInfo) {
             LocalCache.setCache('user', account.user)
             LocalCache.setCache('pwd', account.pwd)
           } else {
             localStorage.clear()
           }
+          store.dispatch('loginModule/accountLoginAction', { ...account })
         }
       })
     }
